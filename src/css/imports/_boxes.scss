@@ -1,0 +1,24 @@
+.box {
+  position: relative;
+  width: 40%;
+  min-width: 18rem;
+  aspect-ratio: 5 / 6;
+  box-shadow: inset 0px 0px 10px 2px $dark-clr;
+  overflow: hidden;
+  border-radius: 5px;
+  font-size: calc(max(3vw, 1.5rem));
+
+  &--item {
+    background-color: $light-clr;
+    border: 1px solid $acnt-clr;
+  }
+
+  &--build {
+    background-color: $light-clr;
+    border: 1px solid $acnt-clr;
+  }
+}
+
+.box + .box {
+  margin-left: 2rem;
+}

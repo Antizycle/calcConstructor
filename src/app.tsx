@@ -1,4 +1,5 @@
 import React from 'react';
+import { Calculator } from './components/Calculator';
 
 
 export const App: React.FC = () => {
@@ -10,7 +11,7 @@ export const App: React.FC = () => {
       </h1>
     </header>
 
-    <h1>Content here</h1>
+    <Calculator />
 
     <footer className='footer'>
       2023 / By&nbsp;
