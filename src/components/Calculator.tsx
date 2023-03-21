@@ -20,7 +20,9 @@ export const Calculator = () => {
               isConstructor={isConstructor} 
               boxType='item' 
               buttons={itemBox} 
-              setButtons={SetItemBox} 
+              opposedButtons={buildBox}
+              setMyButtons={SetItemBox} 
+              setOpposedButtons={SetBuildBox}
               key='itemBox'
               />
 
@@ -28,7 +30,9 @@ export const Calculator = () => {
               isConstructor={isConstructor} 
               boxType='build' 
               buttons={buildBox} 
-              setButtons={SetBuildBox} 
+              opposedButtons={itemBox}
+              setMyButtons={SetBuildBox} 
+              setOpposedButtons={SetItemBox} 
               key='buildBox'
               />
           </div>

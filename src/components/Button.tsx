@@ -1,28 +1,19 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Button as ButtonConfig } from '../types/buttonList-types'; // type
 
 export type ButtonProps = {
   isConstructor: boolean,
-  config: ButtonConfig
-}
-
-  // placeholder functions, must be modules and imported at box componets
-  // and passed down as props to buttons
-  const onDragStartHandler = (event: React.DragEvent<HTMLDivElement>) => {
-    return;
+  config: ButtonConfig,
+  parent: string,
+  onDragStart: (e: React.DragEvent<HTMLDivElement>, parent: string, config: ButtonConfig) => void,
+  onclick: (type: string, action: string) => void,
   }
 
-  const onClickHandler = (type: string, action: string) => {
-    console.log(type, action);
-    return;
-  }
-
-
-export const Button = ({ isConstructor, config }: ButtonProps) => {
+export const Button = ({ isConstructor, config, parent, onDragStart, onclick }: ButtonProps) => {
   let buttonText = config.action;
-  const buttonFunctionAtrrs = isConstructor ?
-      { onDragStart: (event: React.DragEvent<HTMLDivElement>) => onDragStartHandler(event) } :
-      { onclick: () => onClickHandler(config.type, config.action) };
+  // const buttonFunctionAtrrs = isConstructor ?
+  //     { onDragStart: (event: React.DragEvent<HTMLDivElement>) => onDragStart(event) } :
+  //     { onclick: () => onclick(config.type, config.action) };
 
   const classNameMod = ((config.id === 'result') ? '' : ' btn');
 
@@ -32,16 +23,16 @@ export const Button = ({ isConstructor, config }: ButtonProps) => {
   if (buttonText === 'reset') buttonText = 'C';
   if (buttonText === 'bkspc') buttonText = '⇐';
 
-  console.log(classNameMod);
 
   return (
     <div 
-      key={ config.id }
-      id={ config.id }
-      style={ {top: config.position.top, left: config.position.left} }
-      className={ 'block-' + config.size + classNameMod }
-      draggable={ isConstructor }
-      { ...buttonFunctionAtrrs }
+      key = { config.id }
+      id = { config.id }
+      style = { {top: config.position.top + '%', left: config.position.left + '%'} }
+      className = { 'block-' + config.size + classNameMod }
+      draggable = { isConstructor }
+      onDragStart = {(event) => onDragStart(event, parent, config)}
+      onClick = {() => onclick(config.type, config.action)}
       >
       {config.id === 'result' ?
         <>

@@ -1,6 +1,6 @@
 Calculator Constuctor
 
-Goal: develop a calculator consturctor react app with drag and drop functionality
+Goal: develop a responsive calculator consturctor react app with drag and drop functionality
 
 What it does and how it works: 
    There are two boxes on the screen. Intitially left one (itemBox) is rendered full
@@ -13,11 +13,15 @@ What it does and how it works:
    actually do some calculations (with logic as close as to basic W10 calculator)
    without ability to move buttons around. Switching back to Constructor mode should
    disable ability to calculate and enable back the drag and drop functionality.
+   Page layout should be responsive.
 
 Using: Node.Js; Webpack 5 (with SASS, min-css-extract-plugin, html-webpack-plugin,
        devserver), SASS, React, Typescript
 
 Progress Log:
+2. Drag and drop functionality complete. Drop position is calculated from a target box
+   page offset and size, and button page offset and size. And then converted to
+   percentage of target box. This is done to preserve responsive behaviore
 
 1. Basic Layout and Intial rendering of buttons in itemBox - complete. Next Step - 
    add ability to drag'n'drop buttons

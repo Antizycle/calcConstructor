@@ -1,7 +1,7 @@
 export type Button =  {
     id: string,
     size: string,
-    position: { top: string, left: string },
+    position: { top: number, left: number },
     type: string,
     action: string
 }
