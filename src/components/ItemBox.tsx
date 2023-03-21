@@ -8,12 +8,12 @@ export type BoxProps = {
   boxType: 'item' | 'build',
   buttons: ButtonList | null;
   opposedButtons: ButtonList | null;
-  setMyButtons: React.Dispatch<React.SetStateAction<ButtonList | null>>
-  setOpposedButtons: React.Dispatch<React.SetStateAction<ButtonList | null>>
+  setMyButtons: React.Dispatch<React.SetStateAction<ButtonList | null>>,
+  setOpposedButtons: React.Dispatch<React.SetStateAction<ButtonList | null>>,
+  onButtonClick: (type: string, action: string) => void,
 }
 
-export const ItemBox = ({ isConstructor, boxType, buttons, opposedButtons, setMyButtons, setOpposedButtons }: BoxProps) => {
-
+export const ItemBox = ({ isConstructor, boxType, buttons, opposedButtons, onButtonClick, setMyButtons, setOpposedButtons }: BoxProps) => {
   const onDragStartHandler = (event: React.DragEvent<HTMLDivElement>, parent: string, config: ButtonConfig) => {
     event.dataTransfer.setData("itemId", config.id); // setting data transfer
     event.dataTransfer.setData("parent", parent);
@@ -21,7 +21,6 @@ export const ItemBox = ({ isConstructor, boxType, buttons, opposedButtons, setMy
 
   const onDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    
     const itemId = event.dataTransfer.getData('itemId');
     const itemParentId = event.dataTransfer.getData('parent');
     const targetId = boxType + 'Box';
@@ -64,7 +63,6 @@ export const ItemBox = ({ isConstructor, boxType, buttons, opposedButtons, setMy
 
       if (targetId !== itemParentId) {
         if (opposedButtons) nextOpposedButtons = opposedButtons.filter(button => button.id !== itemId);
-        
         if (nextOpposedButtons) setOpposedButtons(nextOpposedButtons);
       }
       if (nextMyButtons) setMyButtons(nextMyButtons);
@@ -74,12 +72,6 @@ export const ItemBox = ({ isConstructor, boxType, buttons, opposedButtons, setMy
   const onDragOverHandler = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   }
-
-  const onClickHandler = (type: string, action: string) => {
-    console.log(type, action);
-    return;
-  }
-
 
   return (
     <div 
@@ -94,7 +86,7 @@ export const ItemBox = ({ isConstructor, boxType, buttons, opposedButtons, setMy
           config={button} 
           key={button.id}
           onDragStart={onDragStartHandler}
-          onclick={onClickHandler}
+          onClick={onButtonClick}
           parent={boxType + 'Box'}
           />
       )}

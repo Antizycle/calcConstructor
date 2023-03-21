@@ -1,0 +1,32 @@
+.mode__cont {
+  min-width: 50%;
+  min-height: 100%;
+  padding: .2em .3em;
+  background-color: #fff;
+  border: 1px solid $acnt-clr;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 1rem;
+  font-weight: 500;
+
+  &--constr {
+    float: left;
+    border-radius: .4rem 0 0 .4rem;
+    box-shadow: -1px -1px 1px 1px #9a8e0c inset;
+    opacity: .7;
+  }
+
+  &--calc {
+    float: right;
+    width: calc(50% - .5em);
+    border-radius: 0 .4rem .4rem 0;
+    box-shadow: -1px -1px 1px 1px #9a8e0c inset;
+    opacity: .7;
+  }
+
+  &--active {
+    box-shadow: unset;
+    box-shadow: 1px 1px 1px 1px #9a8e0c inset;
+    opacity: 1;
+  }
+}

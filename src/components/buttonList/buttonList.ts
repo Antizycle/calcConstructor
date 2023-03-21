@@ -159,7 +159,7 @@ export const buttonList: ButtonList = [
     id: 'negate',
     size: '1x1',
     position: { top: 83.34, left: 60 },
-    type: 'action',
+    type: 'number',
     action: '±'
   },
 ]
