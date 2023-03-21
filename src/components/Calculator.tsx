@@ -2,11 +2,14 @@ import React, { useRef, useState, createContext} from 'react'
 import { ButtonList } from '../types/buttonList-types'; // type
 import { buttonList } from './buttonList/buttonList'; // data
 import { ItemBox } from './ItemBox';
+import calcIcon from '../img/calc-mode__icon.svg';
+import buildIcon from '../img/build-mode__icon.svg';
+
 
 export const calcStrContext = createContext( ['0', ''] );
 
 export const Calculator = () => {
-  const [ isConstructor, SetIsConstructor ] = useState<boolean>(false);
+  const [ isConstructor, SetIsConstructor ] = useState<boolean>(true);
   const [ itemBox, SetItemBox ] = useState<ButtonList | null>(buttonList);
   const [ buildBox, SetBuildBox ] = useState<ButtonList | null>(null);
   const [ calcQueryStr, setCalcQueryStr ] = useState<string>('');
@@ -51,6 +54,7 @@ export const Calculator = () => {
   const calcResult = (type: string, action: string) => {
     if (result.current.cur === null || numberStr.current !== '') {
       result.current.cur = parseFloat(numberStr.current);
+      if (numberStr.current === '') result.current.cur = 0;
     }
 
     let nextQueryStr = '';
@@ -62,6 +66,7 @@ export const Calculator = () => {
     }
 
     if (type === 'special') { // pow, sqrt and %
+  
       if (occured.current.equals) occured.current.equals = false;
       if (occured.current.action) nextQueryStr = `${result.current.prev}${calcAction.current.prev}`;
 
@@ -122,7 +127,9 @@ export const Calculator = () => {
   }
 
   const onClickHandler = (type: string, action: string) => {
-    if (calcResultStr === 'Infinity') calcReset();
+    if (calcResultStr === 'Infinity' || calcResultStr === 'NaN') {
+      calcReset();
+    }
     if (type === 'number') formatResultStr(action);
     if (type === 'reset') calcReset();
     if (type === 'action' || type === 'special') calcResult(type, action);
@@ -134,10 +141,12 @@ export const Calculator = () => {
   return (
     <main className='main'>
       <section className='main__mode' onClick={() => SetIsConstructor(!isConstructor)}>
-        <div className={'mode__cont mode__cont--constr' +( isConstructor ? ' mode__cont--active' : '')}>
+        <div className={'mode__cont mode__cont--constr' + (isConstructor ? ' constr-active' : '')}>
+          <img src={buildIcon} alt='Constructor mode' style={ {opacity: isConstructor ? 1 : 0} } />
           Constructor
         </div>
-        <div className={'mode__cont mode__cont--calc' + (!isConstructor ? ' mode__cont--active' : '')}>
+        <div className={'mode__cont mode__cont--calc' + (!isConstructor ? ' calc-active' : '')}>
+        <img src={calcIcon} alt='Calculator mode'  style={ {opacity: isConstructor ? 0 : 1} } />
           Calculator
         </div>
       </section>

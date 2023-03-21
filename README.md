@@ -67,6 +67,13 @@ Using: Node.Js, Webpack 5 (with SASS, min-css-extract-plugin, html-webpack-plugi
        devserver), SASS, React, Typescript
 
 Progress Log:
+4. Visual overhaul.
+   Fixed inability to use calc actions if input string is empty (initial state). 
+   Removed possibility to perform calculations on NaN and Infinity :)
+   Next steps - fix mobile drag and drop, caclResult function refactoring.
+   Possible new features: button alignment, double click moves button to the 
+   opposite box (coordinates random or as in initial config?).
+
 3. The Mode toggler implemented. Calculator works as intended with a few edge case 
    quirks. Need to refactor calculation function. It's a bit unruly and hard to 
    understand with all the conditions. Next steps - refactoring and styling.

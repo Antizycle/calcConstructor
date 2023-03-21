@@ -3,16 +3,7 @@
 @import './modetoggle';
 
 .main {
-  @include flex-center();
+  display: flex;
+  align-items: center;
   flex-direction: column;
-  // background-color: $dark-clr;
-}
-
-.main__mode {
-  width: 17rem;
-  margin: 2rem 0;
-  padding: .5rem;
-  background-color: #fef7ab;
-  border: 2px solid $acnt-clr;
-  border-radius: 0.5rem;
 }

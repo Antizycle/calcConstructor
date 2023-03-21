@@ -1,24 +1,30 @@
 .box {
   position: relative;
-  width: 40%;
+  width: calc(min(40% , 25rem));
+  // max-height: 400px;
   min-width: 18rem;
   aspect-ratio: 5 / 6;
-  box-shadow: inset 0px 0px 10px 2px $dark-clr;
+  box-shadow:  0px 0px 2px 2px $acnt-clr;
   overflow: hidden;
-  border-radius: 5px;
+  border-radius: 2px;
   font-size: calc(max(3vw, 1.5rem));
 
-  &--item {
-    background-color: $light-clr;
-    border: 1px solid $acnt-clr;
-  }
+  // &--item {
+  //   background-color: $light-clr;
+  //   border: 1px solid $acnt-clr;
+  // }
 
-  &--build {
-    background-color: $light-clr;
-    border: 1px solid $acnt-clr;
-  }
+  // &--build {
+  //   background-color: $light-clr;
+  //   border: 1px solid $acnt-clr;
+  // }
 }
 
 .box + .box {
   margin-left: 2rem;
+
+  @media (max-width: 650px) {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
 }
