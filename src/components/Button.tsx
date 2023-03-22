@@ -7,15 +7,21 @@ export type ButtonProps = {
   config: ButtonConfig,
   parent: string,
   onDragStart: (e: React.DragEvent<HTMLDivElement>, parent: string, config: ButtonConfig) => void,
+  ontouchmove: (event: React.TouchEvent<HTMLDivElement>) => void
+  ontouchend: (event: React.TouchEvent<HTMLDivElement>, parent: string) => void
   onClick: (type: string, action: string) => void,
   }
 
-export const Button = ( { isConstructor, config, parent, onDragStart, onClick }: ButtonProps) => {
+export const Button = ( { isConstructor, config, parent, onDragStart, ontouchmove, ontouchend, onClick }: ButtonProps) => {
   const calcStr = useContext(calcStrContext);
 
   let buttonText = config.action;
   const buttonFunctionAtrrs = isConstructor ?
-      { onDragStart: (event: React.DragEvent<HTMLDivElement>) => onDragStart(event, parent, config) } :
+      { 
+        onDragStart: (event: React.DragEvent<HTMLDivElement>) => onDragStart(event, parent, config),
+        onTouchMove: (event: React.TouchEvent<HTMLDivElement>) => ontouchmove(event),
+        onTouchEnd: (event: React.TouchEvent<HTMLDivElement>) => ontouchend(event, parent),
+      } :
       { onClick: () => onClick(config.type, config.action) };
 
   const classNameMod = ((config.id === 'result') ? '' : ' btn');

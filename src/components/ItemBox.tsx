@@ -14,6 +14,8 @@ export type BoxProps = {
 }
 
 export const ItemBox = ({ isConstructor, boxType, buttons, opposedButtons, onButtonClick, setMyButtons, setOpposedButtons }: BoxProps) => {
+  let touchEndData: React.Touch | null = null;
+
   const onDragStartHandler = (event: React.DragEvent<HTMLDivElement>, parent: string, config: ButtonConfig) => {
     event.dataTransfer.setData("itemId", config.id); // setting data transfer
     event.dataTransfer.setData("parent", parent);
@@ -21,20 +23,28 @@ export const ItemBox = ({ isConstructor, boxType, buttons, opposedButtons, onBut
 
   const onDropHandler = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    const itemId = event.dataTransfer.getData('itemId');
-    const itemParentId = event.dataTransfer.getData('parent');
+    const eventType = 'drag';
+    const buttonId = event.dataTransfer.getData('itemId');
+    const parentId = event.dataTransfer.getData('parent');
     const targetId = boxType + 'Box';
-    let currentButton = buttonList.find( entry => entry.id === itemId);     
-    
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const boxElem = document.getElementById(targetId)!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const buttonElem = document.getElementById(itemId)!;
-
-    const buttonHalfSize = [buttonElem.clientWidth / 2, buttonElem.clientHeight / 2];
-    const targetOffset = [boxElem.offsetLeft, boxElem.offsetTop];
-    const targetSize = [boxElem.clientWidth, boxElem.clientHeight];
     const dropPageOffset = [event.pageX, event.pageY];
+
+    finalizeDrop(targetId, parentId, buttonId, dropPageOffset, eventType);
+  }
+
+  const onDragOverHandler = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  }
+
+  const finalizeDrop = (targetId: string, parentId: string, buttonId: string, dropPageOffset: number[], eventType: 'touch' | 'drag') => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const buttonElem = document.getElementById(buttonId)!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const targetElem = document.getElementById(targetId)!;
+
+    const targetOffset = [targetElem.offsetLeft, targetElem.offsetTop];
+    const targetSize = [targetElem.clientWidth, targetElem.clientHeight];
+    const buttonHalfSize = [buttonElem.clientWidth / 2, buttonElem.clientHeight / 2];
     const dropPosPercentX = (dropPageOffset[0]- buttonHalfSize[0] - targetOffset[0]) * 100 / targetSize[0];
     const dropPosPercentY = (dropPageOffset[1]- buttonHalfSize[1] - targetOffset[1]) * 100 / targetSize[1];
     const maxDropPosition = [
@@ -49,28 +59,55 @@ export const ItemBox = ({ isConstructor, boxType, buttons, opposedButtons, onBut
     if (dropPosition[1] < 1) dropPosition[1] = 1;
     if (dropPosition[1] > maxDropPosition[1]) dropPosition[1] = maxDropPosition[1];
 
-    if (currentButton) {
+    let currentButton = buttonList.find(button => button.id === buttonId);
 
+    if (currentButton) {
       let nextMyButtons: ButtonConfig[] = [];
       let nextOpposedButtons: ButtonConfig[] = [];
 
       currentButton = {...currentButton, position: {top: dropPosition[1], left: dropPosition[0]}};
-      // remove current button from current parent State in any case
-      // and append new current button back
-      // if drop target is not a parent box, remove from parent
-      if (buttons) nextMyButtons = buttons.filter(button => button.id !== itemId);
-      nextMyButtons.push(currentButton);
 
-      if (targetId !== itemParentId) {
-        if (opposedButtons) nextOpposedButtons = opposedButtons.filter(button => button.id !== itemId);
-        if (nextOpposedButtons) setOpposedButtons(nextOpposedButtons);
+      if (buttons) nextMyButtons = buttons.filter(button => button.id !== buttonId);
+      if (parentId === targetId || eventType === 'drag') nextMyButtons.push(currentButton);
+
+      if (targetId !== parentId) { // if drag - delete from opposed currentButton. if touch append currentButton
+        if (opposedButtons) nextOpposedButtons = (eventType === 'drag') ?
+                opposedButtons.filter(button => button.id !== buttonId) :
+                nextOpposedButtons = opposedButtons.slice();
+        if (eventType === 'touch') nextOpposedButtons.push(currentButton);
+        setOpposedButtons(nextOpposedButtons);
       }
-      if (nextMyButtons) setMyButtons(nextMyButtons);
+      setMyButtons(nextMyButtons);
     }
+
   }
 
-  const onDragOverHandler = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
+  const onTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    touchEndData = event.targetTouches[0];
+  }
+
+  const onTouchEnd = (event: React.TouchEvent<HTMLDivElement>, parent: string) => {
+    const eventType = 'touch';
+    const parentId = boxType + 'Box';
+    let targetId = parentId;
+    let otherBoxId = 'itemBox';
+    let dropPageOffset = [0, 0];
+    if (parentId === 'itemBox') otherBoxId = 'buildBox';
+    const buttonId = (event.target as HTMLDivElement).id;
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const otherBoxElem = document.getElementById(otherBoxId)!;
+
+    const otherBoxX: number[] = [otherBoxElem.offsetLeft, otherBoxElem.offsetLeft + otherBoxElem.clientWidth];
+    const otherBoxy: number[] = [otherBoxElem.offsetTop, otherBoxElem.offsetTop + otherBoxElem.clientHeight];
+    if (touchEndData) dropPageOffset = [touchEndData.pageX, touchEndData.pageY];
+
+    if ( (otherBoxX[0] < dropPageOffset[0] && dropPageOffset[0] < otherBoxX[1]) &&
+         (otherBoxy[0] < dropPageOffset[1] && dropPageOffset[1] < otherBoxy[1]) ) {
+      targetId = otherBoxId;
+    }
+
+    finalizeDrop(targetId, parentId, buttonId, dropPageOffset, eventType);
   }
 
   return (
@@ -86,6 +123,8 @@ export const ItemBox = ({ isConstructor, boxType, buttons, opposedButtons, onBut
           config={button} 
           key={button.id}
           onDragStart={onDragStartHandler}
+          ontouchmove={onTouchMove}
+          ontouchend={onTouchEnd}
           onClick={onButtonClick}
           parent={boxType + 'Box'}
           />
