@@ -26,7 +26,13 @@ jobs:
   deploy:
     name: Deploy
     needs: build
+    permissions:
+      pages: write
+      id-token: write
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Download artifact
@@ -35,7 +41,7 @@ jobs:
           name: production-files
           path: ./dist
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        id: deployment
+        uses: actions/deploy-pages@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
