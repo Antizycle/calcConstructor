@@ -15,9 +15,7 @@ export const App: React.FC = () => {
 
     <footer className='footer'>
       2023 / By&nbsp;
-      <a href="http://antizycle.online/" target='_blank' rel="noreferrer" className='footer__link'>
         Antizycle
-      </a>
     </footer>
     </>
   );
