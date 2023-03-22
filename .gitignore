@@ -8,7 +8,7 @@
 # testing
 /coverage
 /source_files
-index.html
+/index.html
 
 # production
 /dist
