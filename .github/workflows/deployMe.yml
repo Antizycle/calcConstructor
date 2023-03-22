@@ -18,8 +18,8 @@ jobs:
         
     - name: Build  
       run: npm run build
-    - name: Upload production-ready build files
-      uses: actions/upload-artifact@v2
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
       with:
         name: github-pages
         path: ./dist
@@ -34,12 +34,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: github-pages
-          path: ./dist
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v1
 
