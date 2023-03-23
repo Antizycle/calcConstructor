@@ -18,6 +18,7 @@ export const Calculator = () => {
   const occured = useRef( {special: false, action: false, equals: false} );
   const result = useRef< {cur: number | null, prev: number | null} >( {cur: null, prev: null} );
   const calcAction = useRef( {cur: '', prev: ''} );
+  const curNumber = useRef(0);
 
   const formatResultStr = (action: string) => {
     if (action === '±') {
@@ -52,10 +53,9 @@ export const Calculator = () => {
   }
 
   const calcResult = (type: string, action: string) => {
-    if (result.current.cur === null || numberStr.current !== '') {
-      result.current.cur = parseFloat(numberStr.current);
-      if (numberStr.current === '') result.current.cur = 0;
-    }
+
+    if (numberStr.current !== '') curNumber.current = parseFloat(numberStr.current);
+    if (result.current.cur === null) result.current.cur = curNumber.current;
 
     let nextQueryStr = '';
     let curResultStr = '';
@@ -71,17 +71,20 @@ export const Calculator = () => {
       if (occured.current.action) nextQueryStr = `${result.current.prev}${calcAction.current.prev}`;
 
       if (action === 'pow') {
-        curResultStr = `(${result.current.cur})²`;
-        result.current.cur = result.current.cur * result.current.cur;
+        curResultStr = `(${curNumber.current})²`;
+        curNumber.current = curNumber.current * curNumber.current;
       }
       if (action === 'sqrt') {
-        curResultStr = `√(${result.current.cur})`;
-        result.current.cur = Math.sqrt(result.current.cur);
+        if (curNumber.current > 0) {
+          curResultStr = `√(${curNumber.current})`;
+          curNumber.current = Math.sqrt(curNumber.current);
+        }
+        else setCalcResultStr('Invalid input');
       }
       if (action === '%') {
-        curResultStr = `${result.current.cur}%`;
-        result.current.cur = result.current.prev           ? 
-          (result.current.prev * result.current.cur / 100) :
+        curResultStr = `${curNumber.current}%`;
+        curNumber.current = result.current.prev           ? 
+          (result.current.prev * curNumber.current / 100) :
           0;
       }
 
@@ -99,10 +102,16 @@ export const Calculator = () => {
 
       if (calcAction.current.prev && (numberStr.current !== '' || occured.current.special || action === '=')) {
         if ((!occured.current.action || action === '=') && result.current.prev) {
-          if (calcAction.current.prev === '+') result.current.cur = result.current.prev + result.current.cur;
-          if (calcAction.current.prev === '-') result.current.cur = result.current.prev - result.current.cur;
-          if (calcAction.current.prev === '*') result.current.cur = result.current.prev * result.current.cur;
-          if (calcAction.current.prev === '/') result.current.cur = result.current.prev / result.current.cur;
+          if (calcAction.current.prev === '+') result.current.cur = result.current.prev + curNumber.current;
+          if (calcAction.current.prev === '-') result.current.cur = result.current.prev - curNumber.current;
+          if (calcAction.current.prev === '*') result.current.cur = result.current.prev * curNumber.current;
+          if (calcAction.current.prev === '/') {
+            if (curNumber.current !== 0) result.current.cur = result.current.prev / curNumber.current;
+            else {
+              setCalcResultStr('Invalid input');
+              return;
+            }
+          }
           occured.current.action = true;
         }
 
@@ -112,22 +121,25 @@ export const Calculator = () => {
       }
 
       occured.current.special = false;
-      curResultStr = result.current.cur.toString();
+      curResultStr = curNumber.current.toString();
       calcAction.current.cur = action;
-
-      if (action !== '=') calcAction.current.prev = action;
       result.current.prev = result.current.cur;
+
+      if (action !== '=') {
+        calcAction.current.prev = action;
+      }
     }
 
     nextQueryStr += `${curResultStr}${calcAction.current.cur}`;
 
     setCalcQueryStr(nextQueryStr);
-    setCalcResultStr(result.current.cur.toString().slice(0, 16));
+    if (occured.current.special) setCalcResultStr(curNumber.current.toString().slice(0, 16));
+    else setCalcResultStr(result.current.cur.toString().slice(0, 16));
     numberStr.current = '';
   }
 
   const onClickHandler = (type: string, action: string) => {
-    if (calcResultStr === 'Infinity' || calcResultStr === 'NaN') {
+    if (calcResultStr === 'Infinity' || calcResultStr === 'NaN' || calcResultStr === 'Invalid input') {
       calcReset();
     }
     if (type === 'number') formatResultStr(action);
