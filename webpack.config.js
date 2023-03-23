@@ -3,6 +3,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 module.exports = {
   entry: './src/index.tsx',
@@ -45,12 +46,13 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       filename: "index.html",
-        template: "./public/index.html",
-        inject: true,
+      template: "./public/index.html",
+      inject: true,
     }),
     new MiniCssExtractPlugin({
       filename: 'css/[name].[contenthash:8].css',
       chunkFilename: 'css/[name].[contenthash:8].chunk.css',
     }),
+    new FaviconsWebpackPlugin('./public/favicon.svg'),
   ],
 }
