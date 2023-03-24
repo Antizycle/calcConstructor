@@ -11,6 +11,8 @@ module.exports = {
         tsconfig: './tsconfig.jest.json',
       },
     ],
+    "^.+\\.svg$": "<rootDir>/svgTransform.js"
   },
   setupFilesAfterEnv: ['./jest.setup.ts'],
+
 };
