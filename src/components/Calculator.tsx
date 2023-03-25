@@ -152,7 +152,7 @@ export const Calculator = () => {
 
   return (
     <main className='main'>
-      <section className='main__mode' onClick={() => SetIsConstructor(!isConstructor)}>
+      <section className='main__mode' title='Mode Switcher' onClick={() => SetIsConstructor(!isConstructor)}>
         <div className={'mode__cont mode__cont--constr' + (isConstructor ? ' constr-active' : '')}>
           <img src={buildIcon} alt='Constructor mode' style={ {opacity: isConstructor ? 1 : 0} } />
           Constructor

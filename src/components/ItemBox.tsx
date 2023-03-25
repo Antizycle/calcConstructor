@@ -114,6 +114,7 @@ export const ItemBox = ({ isConstructor, boxType, buttons, opposedButtons, onBut
     <div 
       className={'box box--' + boxType} 
       id={boxType + 'Box'}
+      title={boxType}
       onDrop={(event) => onDropHandler(event)}
       onDragOver={(event) => onDragOverHandler(event)}
       >

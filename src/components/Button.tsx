@@ -31,19 +31,36 @@ export const Button = ( { isConstructor, config, parent, onDragStart, ontouchmov
   if (buttonText === 'reset') buttonText = 'C';
   if (buttonText === 'bkspc') buttonText = '⇐';
 
+  const buttonTitle = ((config.id === 'result') ? 'Output ' : 'Button ')  + config.id;
+
   return (
     <div 
       key = { config.id }
       id = { config.id }
       style = { {top: config.position.top + '%', left: config.position.left + '%'} }
       className = { 'block-' + config.size + classNameMod }
+      title = {buttonTitle}
       draggable = { isConstructor }
       { ...buttonFunctionAtrrs }
       >
       {config.id === 'result' ?
         <>
-          <input className="block-4x1__query" id="calcQuery" value={ calcStr[1] } maxLength={16} disabled />
-          <input className="block-4x1__result" id="calcResult" value={ calcStr[0] } maxLength={30} disabled />
+          <input 
+            className="block-4x1__query" 
+            id="calcQuery" 
+            title='Calculator Query Output' 
+            value={ calcStr[1] } 
+            maxLength={16} 
+            disabled 
+            />
+          <input 
+            className="block-4x1__result" 
+            id="calcResult" 
+            title='Calculator Result Output' 
+            value={ calcStr[0] } 
+            maxLength={30} 
+            disabled 
+            />
         </> :
         buttonText
       }
